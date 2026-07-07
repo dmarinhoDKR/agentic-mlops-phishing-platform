@@ -10,4 +10,4 @@ __pycache__/
 artifacts/
 mlruns/
 data/processed/
-reports/*.html
+reports/*.html*.egg-info/

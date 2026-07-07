@@ -1,0 +1,31 @@
+[project]
+name = "agentic-mlops-phishing-platform"
+version = "0.1.0"
+description = "An agentic MLOps platform for phishing and incident detection."
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "pandas",
+    "scikit-learn",
+    "torch",
+    "mlflow",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "mypy",
+    "httpx",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

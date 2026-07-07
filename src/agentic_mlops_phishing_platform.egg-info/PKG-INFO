@@ -1,0 +1,18 @@
+Metadata-Version: 2.4
+Name: agentic-mlops-phishing-platform
+Version: 0.1.0
+Summary: An agentic MLOps platform for phishing and incident detection.
+Requires-Python: >=3.11
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: pydantic
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: torch
+Requires-Dist: mlflow
+Requires-Dist: python-dotenv
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: httpx; extra == "dev"

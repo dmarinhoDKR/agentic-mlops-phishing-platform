@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pydantic
+pandas
+scikit-learn
+torch
+mlflow
+python-dotenv
+
+[dev]
+pytest
+ruff
+mypy
+httpx

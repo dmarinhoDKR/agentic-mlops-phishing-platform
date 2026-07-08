@@ -1,0 +1,13 @@
+experiment_name: phishing-baseline
+run_name: tfidf-pytorch-linear
+
+dataset_path: data/raw/phishing_samples.csv
+artifacts_dir: artifacts/baseline
+
+model_type: tfidf_pytorch_linear
+max_features: 128
+learning_rate: 0.05
+epochs: 50
+test_size: 0.25
+random_state: 42
+threshold: 0.5

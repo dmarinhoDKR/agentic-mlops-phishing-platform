@@ -65,6 +65,7 @@ artifacts/baseline/vectorizer.pkl
 - [x] Evaluation pipeline
 - [x] FastAPI inference service
 - [x] MLflow experiment tracking
+- [x] Config-driven training and MLflow traceability
 - [x] Docker Compose local environment
 - [ ] Kubernetes manifests
 - [ ] Agentic ML Ops Copilot

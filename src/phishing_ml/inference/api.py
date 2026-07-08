@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
@@ -5,7 +7,9 @@ from phishing_ml.inference.predictor import PhishingPredictor
 
 
 app = FastAPI(title="Agentic MLOps Phishing API", version="0.1.0")
-predictor = PhishingPredictor()
+
+artifacts_dir = os.getenv("PHISHING_ARTIFACTS_DIR", "artifacts/baseline")
+predictor = PhishingPredictor(artifacts_dir=artifacts_dir)
 
 
 class PredictionRequest(BaseModel):

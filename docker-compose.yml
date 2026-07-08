@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    ports:
+      - "8000:8000"
+    environment:
+      PHISHING_ARTIFACTS_DIR: /app/artifacts/baseline
+      PYTHONPATH: /app/src
+    volumes:
+      - ./artifacts/baseline:/app/artifacts/baseline:ro

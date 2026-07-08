@@ -19,11 +19,11 @@ data -> preprocessing -> training -> evaluation -> model registry -> inference A
 ## Roadmap
 
 - [x] Project scaffold
-- [ ] Synthetic phishing dataset
-- [ ] Training pipeline
-- [ ] Evaluation pipeline
-- [ ] FastAPI inference service
-- [ ] MLflow experiment tracking
+- [x] Synthetic phishing dataset
+- [x] Training pipeline
+- [x] Evaluation pipeline
+- [x] FastAPI inference service
+- [x] MLflow experiment tracking
 - [ ] Docker Compose local environment
 - [ ] Kubernetes manifests
 - [ ] Agentic ML Ops Copilot

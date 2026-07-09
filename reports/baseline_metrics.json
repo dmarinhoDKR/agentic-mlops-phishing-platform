@@ -1,0 +1,35 @@
+{
+  "config_path": "configs/baseline.yaml",
+  "dataset": {
+    "negative_labels": 6,
+    "path": "data/raw/phishing_samples.csv",
+    "positive_labels": 6,
+    "rows": 12
+  },
+  "evaluation_split": {
+    "negative_labels": 2,
+    "positive_labels": 1,
+    "random_state": 42,
+    "rows": 3,
+    "test_size": 0.25
+  },
+  "metrics": {
+    "accuracy": 1.0,
+    "confusion_matrix": {
+      "false_negative": 0,
+      "false_positive": 0,
+      "true_negative": 2,
+      "true_positive": 1
+    },
+    "f1": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "threshold": 0.5
+  },
+  "model": {
+    "artifacts_dir": "artifacts/baseline",
+    "model_path": "artifacts/baseline/model.pt",
+    "type": "tfidf_pytorch_linear",
+    "vectorizer_path": "artifacts/baseline/vectorizer.pkl"
+  }
+}

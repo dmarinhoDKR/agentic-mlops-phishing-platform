@@ -27,6 +27,9 @@ jobs:
       - name: Train baseline artifacts for tests
         run: python -m phishing_ml.training.train_baseline
 
+      - name: Evaluate baseline model
+        run: python -m phishing_ml.evaluation.evaluate_baseline
+
       - name: Lint
         run: ruff check src tests
 

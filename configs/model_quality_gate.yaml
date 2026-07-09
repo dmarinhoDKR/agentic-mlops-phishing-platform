@@ -1,0 +1,6 @@
+metrics_report_path: reports/baseline_metrics.json
+
+minimum_accuracy: 0.85
+minimum_precision: 0.80
+minimum_recall: 0.80
+minimum_f1: 0.80

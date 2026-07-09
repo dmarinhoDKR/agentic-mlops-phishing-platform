@@ -30,6 +30,9 @@ jobs:
       - name: Evaluate baseline model
         run: python -m phishing_ml.evaluation.evaluate_baseline
 
+      - name: Run model quality gate
+        run: python -m phishing_ml.evaluation.quality_gate
+
       - name: Lint
         run: ruff check src tests
 

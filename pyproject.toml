@@ -4,18 +4,23 @@ version = "0.1.0"
 description = "An agentic MLOps platform for phishing and incident detection."
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.139,<0.140",
-    "uvicorn>=0.50,<0.51",
-    "pydantic>=2.13,<2.14",
-    "pandas>=2.3,<2.4",
-    "scikit-learn>=1.9,<1.10",
     "torch>=2.12,<2.13",
-    "mlflow>=3.14,<3.15",
     "python-dotenv>=1.2,<1.3",
-    "pyyaml>=6.0,<6.1",
 ]
 
 [project.optional-dependencies]
+api = [
+    "fastapi>=0.139,<0.140",
+    "uvicorn>=0.50,<0.51",
+    "pydantic>=2.13,<2.14",
+    "scikit-learn>=1.9,<1.10",
+]
+training = [
+    "pandas>=2.3,<2.4",
+    "scikit-learn>=1.9,<1.10",
+    "mlflow>=3.14,<3.15",
+    "pyyaml>=6.0,<6.1",
+]
 dev = [
     "pytest>=9.1,<9.2",
     "ruff>=0.15,<0.16",

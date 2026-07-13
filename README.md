@@ -42,6 +42,24 @@ curl -X POST "http://127.0.0.1:8000/predict" \
   -d '{"text":"Security alert: validate your credentials within 24 hours."}'
 ```
 
+## Using the Deterministic MLOps Copilot
+
+The current copilot stage works without an LLM and exposes deterministic,
+testable tools for inspecting model quality and classifying suspicious messages.
+
+Check the model quality status:
+
+```bash
+python -m phishing_ml.agents.copilot status
+```
+
+Classify a message:
+
+```bash
+python -m phishing_ml.agents.copilot classify \
+  "Urgent: verify your password immediately."
+```
+
 ## Running With Docker Compose
 
 Build and run the inference API:
@@ -66,8 +84,14 @@ artifacts/baseline/vectorizer.pkl
 - [x] FastAPI inference service
 - [x] MLflow experiment tracking
 - [x] Config-driven training and MLflow traceability
+- [x] Automated tests and GitHub Actions CI
+- [x] Structured evaluation report and model quality gate
 - [x] Docker Compose local environment
+- [x] Deterministic MLOps Copilot tools and CLI
+- [ ] Local RAG knowledge base
+- [ ] LangGraph agentic copilot
+- [ ] Full-stack generative AI interface
+- [ ] MCP tool server
 - [ ] Kubernetes manifests
-- [ ] Agentic ML Ops Copilot
 - [ ] Ray distributed training
 - [ ] AWS deployment

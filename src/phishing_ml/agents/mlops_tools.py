@@ -8,6 +8,11 @@ from phishing_ml.evaluation.quality_gate import (
     load_quality_gate_config,
 )
 
+from phishing_ml.inference.predictor import PhishingPredictor
+
+
+DEFAULT_ARTIFACTS_DIR = Path("artifacts/baseline")
+
 
 REQUIRED_REPORT_SECTIONS = {
     "metrics",
@@ -115,3 +120,34 @@ def format_model_status(status: dict[str, Any]) -> str:
         lines.append("All configured quality checks passed.")
 
     return "\n".join(lines)
+
+
+def classify_message(
+    text: str,
+    threshold: float = 0.5,
+    artifacts_dir: str | Path = DEFAULT_ARTIFACTS_DIR,
+) -> dict[str, Any]:
+    normalized_text = text.strip()
+
+    if not normalized_text:
+        raise ValueError("Message text must not be empty")
+
+    if not 0.0 <= threshold <= 1.0:
+        raise ValueError("Threshold must be between 0.0 and 1.0")
+
+    predictor = PhishingPredictor(artifacts_dir=artifacts_dir)
+    prediction = predictor.predict(
+        text=normalized_text,
+        threshold=threshold,
+    )
+
+    return {
+        "tool_name": "classify_message",
+        "input_text": normalized_text,
+        "label": int(prediction["label"]),
+        "class_name": str(prediction["class_name"]),
+        "phishing_probability": float(
+            prediction["phishing_probability"]
+        ),
+        "threshold": float(prediction["threshold"]),
+    }

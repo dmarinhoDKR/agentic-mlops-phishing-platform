@@ -6,6 +6,7 @@ import yaml
 
 from phishing_ml.agents.mlops_tools import (
     build_model_status,
+    classify_message,
     format_model_status,
     load_metrics_report,
 )
@@ -108,3 +109,64 @@ def test_build_model_status_rejects_model(tmp_path):
     assert status["quality_gate"]["passed"] is False
     assert "Model status: REJECTED" in summary
     assert "Failed quality checks: recall" in summary
+
+
+def test_classify_message_returns_structured_prediction(
+    monkeypatch,
+    tmp_path,
+):
+    calls = {}
+
+    class FakePredictor:
+        def __init__(self, artifacts_dir):
+            calls["artifacts_dir"] = artifacts_dir
+
+        def predict(self, text, threshold):
+            calls["text"] = text
+            calls["threshold"] = threshold
+
+            return {
+                "label": 1,
+                "class_name": "phishing",
+                "phishing_probability": 0.92,
+                "threshold": threshold,
+            }
+
+    monkeypatch.setattr(
+        "phishing_ml.agents.mlops_tools.PhishingPredictor",
+        FakePredictor,
+    )
+
+    result = classify_message(
+        text="  Urgent password reset required.  ",
+        threshold=0.6,
+        artifacts_dir=tmp_path,
+    )
+
+    assert calls == {
+        "artifacts_dir": tmp_path,
+        "text": "Urgent password reset required.",
+        "threshold": 0.6,
+    }
+    assert result == {
+        "tool_name": "classify_message",
+        "input_text": "Urgent password reset required.",
+        "label": 1,
+        "class_name": "phishing",
+        "phishing_probability": 0.92,
+        "threshold": 0.6,
+    }
+
+
+def test_classify_message_rejects_empty_text():
+    with pytest.raises(ValueError, match="Message text must not be empty"):
+        classify_message("   ")
+
+
+@pytest.mark.parametrize("threshold", [-0.01, 1.01])
+def test_classify_message_rejects_invalid_threshold(threshold):
+    with pytest.raises(
+        ValueError,
+        match="Threshold must be between 0.0 and 1.0",
+    ):
+        classify_message("Example message", threshold=threshold)

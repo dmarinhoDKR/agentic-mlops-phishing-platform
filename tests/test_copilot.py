@@ -116,3 +116,60 @@ def test_main_returns_one_for_tool_error(
     assert exit_code == 1
     assert captured.out == ""
     assert captured.err == "error: Invalid test message\n"
+
+
+def test_main_runs_search_command(
+    monkeypatch,
+    capsys,
+    tmp_path,
+):
+    calls = {}
+    expected_result = {
+        "tool_name": "search_project_knowledge",
+        "query": "model quality gate",
+        "result_count": 0,
+        "results": [],
+    }
+
+    def fake_search_project_knowledge(
+        query,
+        project_root,
+        limit,
+        minimum_score,
+    ):
+        calls["query"] = query
+        calls["project_root"] = project_root
+        calls["limit"] = limit
+        calls["minimum_score"] = minimum_score
+
+        return expected_result
+
+    monkeypatch.setattr(
+        copilot,
+        "search_project_knowledge",
+        fake_search_project_knowledge,
+    )
+
+    exit_code = copilot.main(
+        [
+            "search",
+            "model quality gate",
+            "--project-root",
+            str(tmp_path),
+            "--limit",
+            "2",
+            "--minimum-score",
+            "0.1",
+        ]
+    )
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert calls == {
+        "query": "model quality gate",
+        "project_root": tmp_path,
+        "limit": 2,
+        "minimum_score": 0.1,
+    }
+    assert json.loads(captured.out) == expected_result
+    assert captured.err == ""

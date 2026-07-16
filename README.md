@@ -44,8 +44,9 @@ curl -X POST "http://127.0.0.1:8000/predict" \
 
 ## Using the Deterministic MLOps Copilot
 
-The current copilot stage works without an LLM and exposes deterministic,
-testable tools for inspecting model quality and classifying suspicious messages.
+The current copilot stage works without an LLM. It exposes deterministic,
+testable tools for inspecting model quality, classifying suspicious messages,
+and retrieving cited evidence from trusted project files.
 
 Check the model quality status:
 
@@ -59,6 +60,18 @@ Classify a message:
 python -m phishing_ml.agents.copilot classify \
   "Urgent: verify your password immediately."
 ```
+
+Search the local project knowledge base:
+
+```bash
+python -m phishing_ml.agents.copilot search \
+  "How is model quality validated?" \
+  --limit 3
+```
+
+The local retrieval pipeline loads trusted project documentation,
+configuration, reports, and CI workflows; creates overlapping line-based
+chunks; ranks them with TF-IDF cosine similarity; and returns source citations.
 
 ## Running With Docker Compose
 
@@ -88,7 +101,7 @@ artifacts/baseline/vectorizer.pkl
 - [x] Structured evaluation report and model quality gate
 - [x] Docker Compose local environment
 - [x] Deterministic MLOps Copilot tools and CLI
-- [ ] Local RAG knowledge base
+- [x] Local RAG knowledge base
 - [ ] LangGraph agentic copilot
 - [ ] Full-stack generative AI interface
 - [ ] MCP tool server

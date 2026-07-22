@@ -1,3 +1,17 @@
+## Tech Stack
+
+![Python](https://img.shields.io/badge/Python-0F172A?style=flat-square&logo=python&logoColor=FFD43B)
+![PyTorch](https://img.shields.io/badge/PyTorch-0F172A?style=flat-square&logo=pytorch&logoColor=EE4C2C)
+![FastAPI](https://img.shields.io/badge/FastAPI-0F172A?style=flat-square&logo=fastapi&logoColor=009688)
+![MLflow](https://img.shields.io/badge/MLflow-0F172A?style=flat-square&logo=mlflow&logoColor=0194E2)
+![Pytest](https://img.shields.io/badge/pytest-0F172A?style=flat-square&logo=pytest&logoColor=0A9EDC)
+![Docker](https://img.shields.io/badge/Docker-0F172A?style=flat-square&logo=docker&logoColor=2496ED)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-0F172A?style=flat-square&logo=githubactions&logoColor=2088FF)
+
+**Backend:** Python, FastAPI and REST APIs  
+**ML & Experiment Tracking:** PyTorch and MLflow  
+**Quality & Delivery:** pytest, Docker and GitHub Actions
+
 # Agentic MLOps Phishing Platform
 
 A production-style MLOps platform for phishing and incident detection.

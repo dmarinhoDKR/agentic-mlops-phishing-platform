@@ -60,7 +60,7 @@ curl -X POST "http://127.0.0.1:8000/predict" \
 
 The current copilot stage works without an LLM. It exposes deterministic,
 testable tools for inspecting model quality, classifying suspicious messages,
-and retrieving cited evidence from trusted project files.
+retrieving cited evidence, and orchestrating quality-gated incident analysis.
 
 Check the model quality status:
 
@@ -83,9 +83,21 @@ python -m phishing_ml.agents.copilot search \
   --limit 3
 ```
 
+Analyze a suspicious message through the LangGraph incident workflow:
+
+```bash
+python -m phishing_ml.agents.copilot analyze \
+  "Urgent: verify your password immediately."
+```
+
 The local retrieval pipeline loads trusted project documentation,
 configuration, reports, and CI workflows; creates overlapping line-based
 chunks; ranks them with TF-IDF cosine similarity; and returns source citations.
+
+The `analyze` command checks the model quality gate before inference. Approved
+models can classify messages, while phishing predictions trigger retrieval of
+cited incident-response guidance. Privileged containment actions remain under
+explicit human control.
 
 ## Running With Docker Compose
 
@@ -116,7 +128,7 @@ artifacts/baseline/vectorizer.pkl
 - [x] Docker Compose local environment
 - [x] Deterministic MLOps Copilot tools and CLI
 - [x] Local RAG knowledge base
-- [ ] LangGraph agentic copilot
+- [x] LangGraph agentic copilot
 - [ ] Full-stack generative AI interface
 - [ ] MCP tool server
 - [ ] Kubernetes manifests

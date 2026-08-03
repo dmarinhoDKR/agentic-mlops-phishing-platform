@@ -173,3 +173,66 @@ def test_main_runs_search_command(
     }
     assert json.loads(captured.out) == expected_result
     assert captured.err == ""
+
+
+def test_main_runs_analyze_command(
+    monkeypatch,
+    capsys,
+    tmp_path,
+):
+    calls = {}
+    artifacts_dir = tmp_path / "artifacts"
+    config_path = tmp_path / "quality_gate.yaml"
+    expected_result = {
+        "tool_name": "analyze_incident",
+        "outcome": "phishing",
+        "reason": "phishing_detected",
+    }
+
+    def fake_run_incident_workflow(
+        message,
+        threshold,
+        artifacts_dir,
+        quality_gate_config,
+        project_root,
+    ):
+        calls["message"] = message
+        calls["threshold"] = threshold
+        calls["artifacts_dir"] = artifacts_dir
+        calls["quality_gate_config"] = quality_gate_config
+        calls["project_root"] = project_root
+
+        return expected_result
+
+    monkeypatch.setattr(
+        copilot,
+        "run_incident_workflow",
+        fake_run_incident_workflow,
+    )
+
+    exit_code = copilot.main(
+        [
+            "analyze",
+            "Suspicious message",
+            "--threshold",
+            "0.7",
+            "--artifacts-dir",
+            str(artifacts_dir),
+            "--config",
+            str(config_path),
+            "--project-root",
+            str(tmp_path),
+        ]
+    )
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert calls == {
+        "message": "Suspicious message",
+        "threshold": 0.7,
+        "artifacts_dir": artifacts_dir,
+        "quality_gate_config": config_path,
+        "project_root": tmp_path,
+    }
+    assert json.loads(captured.out) == expected_result
+    assert captured.err == ""

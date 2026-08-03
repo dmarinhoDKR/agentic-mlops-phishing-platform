@@ -10,6 +10,7 @@ from phishing_ml.agents.mlops_tools import (
     classify_message,
     format_model_status,
 )
+from phishing_ml.agents.workflow import run_incident_workflow
 from phishing_ml.evaluation.quality_gate import DEFAULT_GATE_CONFIG_PATH
 from phishing_ml.rag.retriever import DEFAULT_RESULT_LIMIT
 from phishing_ml.rag.search import (
@@ -22,7 +23,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
             "Inspect model quality, classify suspicious messages, "
-            "and search project knowledge."
+            "search project knowledge, and analyze phishing incidents."
         )
     )
     subparsers = parser.add_subparsers(
@@ -63,6 +64,40 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory containing the model and vectorizer artifacts.",
     )
     classify_parser.set_defaults(handler=_run_classify)
+
+    analyze_parser = subparsers.add_parser(
+        "analyze",
+        help="Run the quality-gated phishing incident workflow.",
+    )
+    analyze_parser.add_argument(
+        "text",
+        help="Message text to analyze.",
+    )
+    analyze_parser.add_argument(
+        "--threshold",
+        type=float,
+        default=0.5,
+        help="Probability threshold used for phishing classification.",
+    )
+    analyze_parser.add_argument(
+        "--artifacts-dir",
+        type=Path,
+        default=DEFAULT_ARTIFACTS_DIR,
+        help="Directory containing the model and vectorizer artifacts.",
+    )
+    analyze_parser.add_argument(
+        "--config",
+        type=Path,
+        default=DEFAULT_GATE_CONFIG_PATH,
+        help="Path to the model quality gate configuration.",
+    )
+    analyze_parser.add_argument(
+        "--project-root",
+        type=Path,
+        default=DEFAULT_PROJECT_ROOT,
+        help="Root directory containing the incident knowledge base.",
+    )
+    analyze_parser.set_defaults(handler=_run_analyze)
 
     search_parser = subparsers.add_parser(
         "search",
@@ -107,6 +142,19 @@ def _run_classify(args: argparse.Namespace) -> int:
         text=args.text,
         threshold=args.threshold,
         artifacts_dir=args.artifacts_dir,
+    )
+    print(json.dumps(result, indent=2, sort_keys=True))
+
+    return 0
+
+
+def _run_analyze(args: argparse.Namespace) -> int:
+    result = run_incident_workflow(
+        message=args.text,
+        threshold=args.threshold,
+        artifacts_dir=args.artifacts_dir,
+        quality_gate_config=args.config,
+        project_root=args.project_root,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
 

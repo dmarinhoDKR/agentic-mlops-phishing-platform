@@ -27,6 +27,19 @@ jobs:
             --index-url https://download.pytorch.org/whl/cpu
           python -m pip install -e ".[api,training,agent,dev]"
 
+      - name: Check dependency integrity
+        run: python -m pip check
+
+      - name: Audit dependencies
+        run: |
+          python -m pip_audit \
+            --ignore-vuln PYSEC-2026-3447 \
+            --ignore-vuln PYSEC-2025-194 \
+            --ignore-vuln GHSA-fjr4-x663-mwxc \
+            --ignore-vuln GHSA-6p8h-3wgx-97gf \
+            --ignore-vuln GHSA-r9mr-m37c-5fr3 \
+            --ignore-vuln GHSA-94p4-4cq8-9g67
+
       - name: Train baseline artifacts for tests
         run: python -m phishing_ml.training.train_baseline
 
@@ -38,6 +51,9 @@ jobs:
 
       - name: Lint
         run: ruff check src tests
+
+      - name: Type check
+        run: mypy src --ignore-missing-imports
 
       - name: Test
         run: pytest

@@ -3,6 +3,7 @@ import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
 
 from phishing_ml.agents.mlops_tools import (
     DEFAULT_ARTIFACTS_DIR,
@@ -97,6 +98,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=DEFAULT_PROJECT_ROOT,
         help="Root directory containing the incident knowledge base.",
     )
+    analyze_parser.add_argument(
+        "--output",
+        choices=("json", "summary"),
+        default="json",
+        help="Output format for the incident analysis.",
+    )
     analyze_parser.set_defaults(handler=_run_analyze)
 
     search_parser = subparsers.add_parser(
@@ -156,9 +163,84 @@ def _run_analyze(args: argparse.Namespace) -> int:
         quality_gate_config=args.config,
         project_root=args.project_root,
     )
-    print(json.dumps(result, indent=2, sort_keys=True))
+
+    if args.output == "summary":
+        print(format_incident_analysis(result))
+    else:
+        print(json.dumps(result, indent=2, sort_keys=True))
 
     return 0
+
+
+def format_incident_analysis(result: dict[str, Any]) -> str:
+    model_status = result.get("model_status")
+
+    if not isinstance(model_status, dict):
+        raise ValueError("Model status is missing from incident analysis")
+
+    metrics = model_status.get("metrics")
+
+    if not isinstance(metrics, dict):
+        raise ValueError("Model metrics are missing from incident analysis")
+
+    outcome = str(result.get("outcome", "unknown"))
+    lines = [
+        "Workflow: LangGraph incident analysis",
+        f"Incident outcome: {outcome.upper()}",
+        f"Reason: {result.get('reason', 'unknown')}",
+        f"Model status: {str(model_status.get('status', 'unknown')).upper()}",
+        (
+            "Quality metrics: "
+            f"accuracy={float(metrics['accuracy']):.4f}, "
+            f"precision={float(metrics['precision']):.4f}, "
+            f"recall={float(metrics['recall']):.4f}, "
+            f"f1={float(metrics['f1']):.4f}"
+        ),
+    ]
+
+    classification = result.get("classification")
+
+    if isinstance(classification, dict):
+        lines.extend(
+            [
+                f"Classification: {classification['class_name']}",
+                (
+                    "Phishing probability: "
+                    f"{float(classification['phishing_probability']):.4f}"
+                ),
+            ]
+        )
+
+    guidance = result.get("guidance")
+
+    if isinstance(guidance, dict):
+        guidance_results = guidance.get("results", [])
+        lines.append(f"Guidance sources ({len(guidance_results)}):")
+
+        for rank, guidance_result in enumerate(
+            guidance_results,
+            start=1,
+        ):
+            lines.append(f"  {rank}. {guidance_result['citation']}")
+
+    if outcome == "blocked":
+        failed_metrics = model_status.get("failed_metrics", [])
+
+        if failed_metrics:
+            lines.append(
+                "Failed quality checks: "
+                + ", ".join(str(metric) for metric in failed_metrics)
+            )
+
+        lines.append("Inference blocked by the model quality gate.")
+    elif outcome == "legitimate":
+        lines.append("No incident-response guidance was required.")
+    elif outcome == "phishing":
+        lines.append(
+            "Automation boundary: privileged actions require explicit human approval."
+        )
+
+    return "\n".join(lines)
 
 
 def _run_search(args: argparse.Namespace) -> int:

@@ -236,3 +236,136 @@ def test_main_runs_analyze_command(
     }
     assert json.loads(captured.out) == expected_result
     assert captured.err == ""
+
+
+def test_main_runs_analyze_summary_command(
+    monkeypatch,
+    capsys,
+):
+    expected_result = {
+        "tool_name": "analyze_incident",
+        "outcome": "phishing",
+        "reason": "phishing_detected",
+        "model_status": {
+            "status": "approved",
+            "failed_metrics": [],
+            "metrics": {
+                "accuracy": 0.91,
+                "precision": 0.90,
+                "recall": 0.89,
+                "f1": 0.88,
+            },
+        },
+        "classification": {
+            "class_name": "phishing",
+            "phishing_probability": 0.92,
+        },
+        "guidance": {
+            "results": [
+                {
+                    "citation": (
+                        "docs/phishing_incident_response.md#L1-L40"
+                    )
+                },
+                {
+                    "citation": (
+                        "docs/phishing_incident_response.md#L36-L70"
+                    )
+                },
+            ]
+        },
+    }
+
+    def fake_run_incident_workflow(**kwargs):
+        return expected_result
+
+    monkeypatch.setattr(
+        copilot,
+        "run_incident_workflow",
+        fake_run_incident_workflow,
+    )
+
+    exit_code = copilot.main(
+        [
+            "analyze",
+            "Suspicious message",
+            "--output",
+            "summary",
+        ]
+    )
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert captured.out == (
+        "Workflow: LangGraph incident analysis\n"
+        "Incident outcome: PHISHING\n"
+        "Reason: phishing_detected\n"
+        "Model status: APPROVED\n"
+        "Quality metrics: accuracy=0.9100, precision=0.9000, "
+        "recall=0.8900, f1=0.8800\n"
+        "Classification: phishing\n"
+        "Phishing probability: 0.9200\n"
+        "Guidance sources (2):\n"
+        "  1. docs/phishing_incident_response.md#L1-L40\n"
+        "  2. docs/phishing_incident_response.md#L36-L70\n"
+        "Automation boundary: privileged actions require explicit "
+        "human approval.\n"
+    )
+    assert captured.err == ""
+
+
+def test_format_incident_analysis_describes_blocked_inference():
+    summary = copilot.format_incident_analysis(
+        {
+            "outcome": "blocked",
+            "reason": "model_quality_gate_rejected",
+            "model_status": {
+                "status": "rejected",
+                "failed_metrics": ["recall"],
+                "metrics": {
+                    "accuracy": 0.85,
+                    "precision": 0.80,
+                    "recall": 0.70,
+                    "f1": 0.75,
+                },
+            },
+            "classification": None,
+            "guidance": None,
+        }
+    )
+
+    assert "Incident outcome: BLOCKED" in summary
+    assert "Failed quality checks: recall" in summary
+    assert summary.endswith(
+        "Inference blocked by the model quality gate."
+    )
+
+
+def test_format_incident_analysis_describes_legitimate_message():
+    summary = copilot.format_incident_analysis(
+        {
+            "outcome": "legitimate",
+            "reason": "message_classified_as_legitimate",
+            "model_status": {
+                "status": "approved",
+                "failed_metrics": [],
+                "metrics": {
+                    "accuracy": 0.91,
+                    "precision": 0.90,
+                    "recall": 0.89,
+                    "f1": 0.88,
+                },
+            },
+            "classification": {
+                "class_name": "legitimate",
+                "phishing_probability": 0.08,
+            },
+            "guidance": None,
+        }
+    )
+
+    assert "Incident outcome: LEGITIMATE" in summary
+    assert "Classification: legitimate" in summary
+    assert summary.endswith(
+        "No incident-response guidance was required."
+    )

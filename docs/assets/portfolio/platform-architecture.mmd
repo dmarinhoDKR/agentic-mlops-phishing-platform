@@ -1,0 +1,62 @@
+---
+title: Agentic MLOps Phishing Platform
+---
+%%{init: {"theme": "base", "themeVariables": {"background": "#071018", "primaryTextColor": "#f8fafc", "lineColor": "#8ba3b8", "fontFamily": "Inter, Segoe UI, Arial, sans-serif", "clusterBkg": "#0b1622", "clusterBorder": "#31475b", "edgeLabelBackground": "#071018"}, "flowchart": {"curve": "basis", "nodeSpacing": 44, "rankSpacing": 62}}}%%
+flowchart TB
+    CI["GitHub Actions CI<br/>audit dependencies · train · evaluate · quality gate<br/>Ruff · Mypy · Pytest · Docker Compose"]:::ci
+
+    subgraph MODEL["MODEL LIFECYCLE"]
+        direction LR
+        INPUTS["Dataset + configuration<br/>phishing samples · baseline.yaml"]:::data
+        TRAIN["Training pipeline<br/>TF-IDF + PyTorch<br/>MLflow traceability"]:::process
+        EVAL["Held-out evaluation<br/>accuracy · precision · recall · F1"]:::observe
+        GATE{"Model quality gate"}:::gate
+        BLOCK["Inference blocked"]:::blocked
+
+        INPUTS --> TRAIN --> EVAL --> GATE
+        GATE -->|"rejected"| BLOCK
+    end
+
+    subgraph SERVING["CONTAINERIZED MODEL SERVING"]
+        direction LR
+        ARTIFACTS["Trusted artifacts<br/>model.pt · vectorizer.pkl"]:::artifact
+        DOCKER["Docker Compose<br/>healthcheck · read-only mount"]:::runtime
+        API["FastAPI inference<br/>POST /predict"]:::runtime
+
+        ARTIFACTS --> DOCKER --> API
+    end
+
+    subgraph COPILOT["AGENTIC INCIDENT RESPONSE"]
+        direction LR
+        KNOWLEDGE["Trusted project knowledge<br/>docs · configs · reports · CI"]:::data
+        RAG["Local RAG<br/>line chunks · TF-IDF retrieval"]:::agent
+        GRAPH["LangGraph copilot<br/>quality-gated routing"]:::agent
+        GUIDANCE["Cited incident guidance"]:::output
+        HUMAN["Human approval boundary<br/>privileged actions stay manual"]:::human
+
+        KNOWLEDGE --> RAG --> GRAPH --> GUIDANCE --> HUMAN
+    end
+
+    TRAIN --> ARTIFACTS
+    GATE -->|"approved"| DOCKER
+    ARTIFACTS --> GRAPH
+    GATE -->|"approved"| GRAPH
+
+    CI -. "audits & validates" .-> TRAIN
+    CI -. "enforces" .-> GATE
+
+    classDef ci fill:#12283a,stroke:#38bdf8,color:#f8fafc,stroke-width:2px;
+    classDef data fill:#102a43,stroke:#60a5fa,color:#f8fafc,stroke-width:1.5px;
+    classDef process fill:#173047,stroke:#22d3ee,color:#f8fafc,stroke-width:1.5px;
+    classDef observe fill:#302719,stroke:#f59e0b,color:#fff7ed,stroke-width:1.5px;
+    classDef artifact fill:#18352f,stroke:#34d399,color:#ecfdf5,stroke-width:1.5px;
+    classDef gate fill:#332d18,stroke:#facc15,color:#fefce8,stroke-width:2px;
+    classDef blocked fill:#381d27,stroke:#fb7185,color:#fff1f2,stroke-width:1.5px;
+    classDef runtime fill:#12362e,stroke:#2dd4bf,color:#f0fdfa,stroke-width:1.5px;
+    classDef agent fill:#2b2440,stroke:#c084fc,color:#faf5ff,stroke-width:1.5px;
+    classDef output fill:#2e3218,stroke:#a3e635,color:#f7fee7,stroke-width:1.5px;
+    classDef human fill:#3a2420,stroke:#fb923c,color:#fff7ed,stroke-width:2px;
+
+    style MODEL fill:#0b1622,stroke:#31475b,stroke-width:1px,color:#cbd5e1
+    style SERVING fill:#0b1622,stroke:#31475b,stroke-width:1px,color:#cbd5e1
+    style COPILOT fill:#0b1622,stroke:#31475b,stroke-width:1px,color:#cbd5e1

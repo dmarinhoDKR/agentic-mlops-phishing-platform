@@ -26,9 +26,15 @@ A production-style MLOps platform for phishing and incident detection.
 - Add an agentic AI assistant to analyze model metrics, logs, and regressions.
 - Extend the platform to distributed training with Ray and cloud infrastructure on AWS.
 
-## Planned Architecture
+## Architecture
 
-data -> preprocessing -> training -> evaluation -> model registry -> inference API -> monitoring -> agentic analysis
+The implemented architecture connects reproducible model training and MLflow
+traceability to a quality gate, containerized inference, local RAG, and a
+LangGraph incident workflow with an explicit human-approval boundary.
+
+[![Agentic MLOps platform architecture](docs/assets/portfolio/platform-architecture.png)](docs/assets/portfolio/platform-architecture.png)
+
+The editable diagram source is available in [Mermaid format](docs/assets/portfolio/platform-architecture.mmd).
 
 ## Running Locally
 
@@ -87,8 +93,12 @@ Analyze a suspicious message through the LangGraph incident workflow:
 
 ```bash
 python -m phishing_ml.agents.copilot analyze \
-  "Urgent: verify your password immediately."
+  "Urgent: verify your password immediately." \
+  --output summary
 ```
+
+Use `--output summary` for a concise human-readable result. Omit the option to
+retain the complete structured JSON response.
 
 The local retrieval pipeline loads trusted project documentation,
 configuration, reports, and CI workflows; creates overlapping line-based
@@ -113,6 +123,78 @@ The API expects model artifacts at:
 artifacts/baseline/model.pt
 artifacts/baseline/vectorizer.pkl
 ```
+
+## Portfolio Evidence
+
+The screenshots below show the implemented workflows running end to end.
+Select any image to open the full-resolution version.
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="docs/assets/portfolio/github-actions-secure-mlops-ci.png">
+        <img src="docs/assets/portfolio/github-actions-secure-mlops-ci.png"
+             alt="Successful secure MLOps workflow in GitHub Actions">
+      </a>
+      <br>
+      <strong>Secure CI/CD</strong><br>
+      Dependency audit, model training, evaluation, quality gate, static
+      analysis, tests, and Docker Compose validation.
+    </td>
+    <td width="50%" valign="top">
+      <a href="docs/assets/portfolio/langgraph-phishing-incident-analysis.png">
+        <img src="docs/assets/portfolio/langgraph-phishing-incident-analysis.png"
+             alt="LangGraph phishing incident analysis in the Copilot CLI">
+      </a>
+      <br>
+      <strong>Quality-gated incident analysis</strong><br>
+      Phishing classification, quality metrics, cited RAG guidance, and an
+      explicit human-approval boundary.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="docs/assets/portfolio/mlflow-run-metrics.png">
+        <img src="docs/assets/portfolio/mlflow-run-metrics.png"
+             alt="MLflow run metrics and parameters">
+      </a>
+      <br>
+      <strong>Experiment traceability</strong><br>
+      Reproducible training parameters and model metrics recorded in MLflow.
+    </td>
+    <td width="50%" valign="top">
+      <a href="docs/assets/portfolio/mlflow-model-artifacts.png">
+        <img src="docs/assets/portfolio/mlflow-model-artifacts.png"
+             alt="Model and vectorizer artifacts recorded in MLflow">
+      </a>
+      <br>
+      <strong>Reproducible artifacts</strong><br>
+      Versioned configuration, PyTorch model, and fitted TF-IDF vectorizer.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top" align="center">
+      <a href="docs/assets/portfolio/fastapi-phishing-prediction.png">
+        <img src="docs/assets/portfolio/fastapi-phishing-prediction.png"
+             alt="FastAPI Swagger UI showing a phishing prediction"
+             width="62%">
+      </a>
+      <br>
+      <strong>FastAPI prediction contract</strong><br>
+      Typed request payload and structured phishing response through
+      <code>POST /predict</code>.
+    </td>
+    <td width="50%" valign="top">
+      <a href="docs/assets/portfolio/docker-compose-healthy-api.png">
+        <img src="docs/assets/portfolio/docker-compose-healthy-api.png"
+             alt="Healthy Docker Compose API with a read-only artifact mount">
+      </a>
+      <br>
+      <strong>Containerized inference</strong><br>
+      Healthy API, live prediction, and model artifacts mounted read-only.
+    </td>
+  </tr>
+</table>
 
 ## Roadmap
 

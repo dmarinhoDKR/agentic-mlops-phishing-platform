@@ -8,10 +8,10 @@ ENV PYTHONPATH=/app/src
 COPY pyproject.toml README.md ./
 COPY src ./src
 
-RUN pip install --no-cache-dir --upgrade pip \
+RUN pip install --no-cache-dir --upgrade pip "setuptools==84.0.0" \
     && pip install \
         --no-cache-dir \
-        "torch>=2.12,<2.13" \
+        "torch>=2.13,<2.14" \
         --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -e ".[api]"
 

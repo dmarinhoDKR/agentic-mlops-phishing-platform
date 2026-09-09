@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "An agentic MLOps platform for phishing and incident detection."
 requires-python = ">=3.11"
 dependencies = [
-    "torch>=2.12,<2.13",
+    "torch>=2.13,<2.14",
     "python-dotenv>=1.2,<1.3",
 ]
 
@@ -16,12 +16,15 @@ api = [
     "scikit-learn>=1.9,<1.10",
 ]
 training = [
-    "gitpython>=3.1.53,<3.2",
+    "aiohttp>=3.14.3,<3.15",
+    "cryptography>=50.0,<51",
+    "gitpython>=3.1.59,<3.2",
     "pandas>=2.3,<2.4",
     "scikit-learn>=1.9,<1.10",
-    "mlflow>=3.14,<3.15",
+    "mlflow>=3.16,<3.17",
     "pyasn1>=0.6.4,<0.7",
     "pyyaml>=6.0,<6.1",
+    "sqlparse>=0.6,<0.7",
 ]
 agent = [
     "langgraph>=1.2,<1.3",
@@ -30,7 +33,8 @@ dev = [
     "pytest>=9.1,<9.2",
     "ruff>=0.15,<0.16",
     "mypy>=2.1,<2.2",
-    "httpx2>=2.5,<2.6",
+    "httpcore2>=2.12,<2.13",
+    "httpx2>=2.12,<2.13",
     "pip-audit>=2.10,<2.11",
 ]
 

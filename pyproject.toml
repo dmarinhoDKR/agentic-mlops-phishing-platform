@@ -14,6 +14,7 @@ api = [
     "uvicorn>=0.50,<0.51",
     "pydantic>=2.13,<2.14",
     "scikit-learn>=1.9,<1.10",
+    "anyio>=4.14.2,<5",
 ]
 training = [
     "aiohttp>=3.14.3,<3.15",

@@ -26,3 +26,10 @@ def test_predict_endpoint_returns_phishing_prediction():
     assert payload["class_name"] in ["phishing", "legitimate"]
     assert 0.0 <= payload["phishing_probability"] <= 1.0
     assert payload["threshold"] == 0.5
+
+
+def test_predict_endpoint_rejects_oversized_text():
+    response = client.post("/predict", json={"text": "x" * 10_001})
+
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["type"] == "string_too_long"

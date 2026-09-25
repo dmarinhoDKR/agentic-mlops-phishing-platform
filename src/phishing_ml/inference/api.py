@@ -13,7 +13,7 @@ predictor = PhishingPredictor(artifacts_dir=artifacts_dir)
 
 
 class PredictionRequest(BaseModel):
-    text: str = Field(..., min_length=1)
+    text: str = Field(..., min_length=1, max_length=10_000)
     threshold: float = Field(default=0.5, ge=0.0, le=1.0)
 
 

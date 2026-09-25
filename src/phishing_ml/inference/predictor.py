@@ -1,7 +1,10 @@
 from pathlib import Path
-import pickle
+from typing import cast
 
+from scipy.sparse import csr_matrix
+import skops.io as sio
 import torch
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 from phishing_ml.training.model import PhishingClassifier
 
@@ -12,14 +15,17 @@ class PhishingPredictor:
         self.vectorizer = self._load_vectorizer()
         self.model = self._load_model()
 
-    def _load_vectorizer(self):
-        vectorizer_path = self.artifacts_dir / "vectorizer.pkl"
+    def _load_vectorizer(self) -> TfidfVectorizer:
+        vectorizer_path = self.artifacts_dir / "vectorizer.skops"
 
         if not vectorizer_path.exists():
             raise FileNotFoundError(f"Vectorizer not found: {vectorizer_path}")
 
-        with open(vectorizer_path, "rb") as file:
-            return pickle.load(file)
+        vectorizer = sio.load(vectorizer_path)
+        if not isinstance(vectorizer, TfidfVectorizer):
+            raise TypeError("Unexpected vectorizer type")
+
+        return vectorizer
 
     def _load_model(self) -> PhishingClassifier:
         model_path = self.artifacts_dir / "model.pt"
@@ -36,7 +42,7 @@ class PhishingPredictor:
         return model
 
     def predict(self, text: str, threshold: float = 0.5) -> dict:
-        features = self.vectorizer.transform([text]).toarray()
+        features = cast(csr_matrix, self.vectorizer.transform([text])).toarray()
         features_tensor = torch.tensor(features, dtype=torch.float32)
 
         with torch.no_grad():

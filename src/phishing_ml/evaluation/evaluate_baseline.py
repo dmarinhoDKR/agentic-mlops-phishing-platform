@@ -1,9 +1,11 @@
 import json
 from pathlib import Path
-import pickle
 from typing import Any
 
+import skops.io as sio
+
 import torch
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 
 from phishing_ml.config import load_baseline_training_config
@@ -39,11 +41,12 @@ def evaluate(
         stratify=labels,
     )
 
-    vectorizer_path = config.artifacts_dir / "vectorizer.pkl"
+    vectorizer_path = config.artifacts_dir / "vectorizer.skops"
     model_path = config.artifacts_dir / "model.pt"
 
-    with open(vectorizer_path, "rb") as file:
-        vectorizer = pickle.load(file)
+    vectorizer = sio.load(vectorizer_path)
+    if not isinstance(vectorizer, TfidfVectorizer):
+        raise TypeError("Unexpected vectorizer type")
 
     features = _to_dense_array(vectorizer.transform(test_texts))
     features_tensor = torch.tensor(features, dtype=torch.float32)

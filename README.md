@@ -121,7 +121,7 @@ The API expects model artifacts at:
 
 ```text
 artifacts/baseline/model.pt
-artifacts/baseline/vectorizer.pkl
+artifacts/baseline/vectorizer.skops
 ```
 
 ## Portfolio Evidence

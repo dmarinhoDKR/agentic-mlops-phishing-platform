@@ -1,9 +1,10 @@
 from pathlib import Path
-import pickle
 from typing import Any
 
 import mlflow
+import skops.io as sio
 import torch
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from torch import nn
@@ -83,12 +84,10 @@ def train(config_path: str | Path = DEFAULT_CONFIG_PATH) -> None:
         mlflow.log_metric("test_accuracy", accuracy)
 
         model_path = config.artifacts_dir / "model.pt"
-        vectorizer_path = config.artifacts_dir / "vectorizer.pkl"
+        vectorizer_path = config.artifacts_dir / "vectorizer.skops"
 
         torch.save(model.state_dict(), model_path)
-
-        with open(vectorizer_path, "wb") as file:
-            pickle.dump(vectorizer, file)
+        sio.dump(vectorizer, vectorizer_path)
 
         mlflow.log_artifact(str(model_path), artifact_path="model")
         mlflow.log_artifact(str(vectorizer_path), artifact_path="model")

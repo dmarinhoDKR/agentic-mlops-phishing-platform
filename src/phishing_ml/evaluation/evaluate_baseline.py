@@ -52,7 +52,7 @@ def evaluate(
     features_tensor = torch.tensor(features, dtype=torch.float32)
 
     model = PhishingClassifier(input_dim=features_tensor.shape[1])
-    model.load_state_dict(torch.load(model_path, map_location="cpu"))
+    model.load_state_dict(torch.load(model_path, map_location="cpu", weights_only=True))
     model.eval()
 
     with torch.no_grad():

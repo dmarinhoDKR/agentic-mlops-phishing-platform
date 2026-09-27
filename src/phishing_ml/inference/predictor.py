@@ -35,7 +35,7 @@ class PhishingPredictor:
 
         input_dim = len(self.vectorizer.get_feature_names_out())
         model = PhishingClassifier(input_dim=input_dim)
-        state_dict = torch.load(model_path, map_location="cpu")
+        state_dict = torch.load(model_path, map_location="cpu", weights_only=True)
         model.load_state_dict(state_dict)
         model.eval()
 

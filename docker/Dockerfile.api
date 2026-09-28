@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir --upgrade pip "setuptools==84.0.0" \
         --no-cache-dir \
         "torch>=2.13,<2.14" \
         --index-url https://download.pytorch.org/whl/cpu \
-    && pip install --no-cache-dir -e ".[api]"
+    && pip install --no-cache-dir -e ".[api,agent]"
 
 USER 10001:10001
 

@@ -62,6 +62,17 @@ curl -X POST "http://127.0.0.1:8000/predict" \
   -d '{"text":"Security alert: validate your credentials within 24 hours."}'
 ```
 
+Analyze a message through the quality-gated incident workflow:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/analyze" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Urgent: verify your password immediately."}'
+```
+
+The response includes model status, classification, and cited guidance.
+It does not perform containment actions; those require human approval.
+
 ## Using the Deterministic MLOps Copilot
 
 The current copilot stage works without an LLM. It exposes deterministic,

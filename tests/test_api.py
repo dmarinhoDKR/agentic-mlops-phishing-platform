@@ -33,3 +33,26 @@ def test_predict_endpoint_rejects_oversized_text():
 
     assert response.status_code == 422
     assert response.json()["detail"][0]["type"] == "string_too_long"
+
+
+def test_analyze_endpoint_returns_phishing_guidance():
+    response = client.post(
+        "/analyze",
+        json={"text": "Urgent: verify your password immediately."},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["outcome"] == "phishing"
+    assert payload["model_status"]["status"] == "approved"
+    assert payload["classification"]["class_name"] == "phishing"
+    assert any(
+        result.get("citation")
+        for result in payload["guidance"]["results"]
+    )
+
+
+def test_analyze_endpoint_rejects_blank_text():
+    response = client.post("/analyze", json={"text": "   "})
+
+    assert response.status_code == 422

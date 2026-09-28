@@ -1,0 +1,116 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f7fa;
+  color: #182230;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 20px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  line-height: 1.2;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+}
+
+form {
+  margin-top: 32px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 180px;
+  padding: 12px;
+  border: 1px solid #68778d;
+  border-radius: 8px;
+  background: white;
+  color: inherit;
+  font: inherit;
+  resize: vertical;
+}
+
+#message-help {
+  margin: 8px 0 16px;
+  color: #475569;
+  font-size: 0.875rem;
+}
+
+button {
+  min-height: 44px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 8px;
+  background: #1d4ed8;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: #1e40af;
+}
+
+button:disabled {
+  background: #526176;
+  cursor: wait;
+}
+
+textarea:focus-visible,
+button:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+
+#analysis-status {
+  min-height: 1.6em;
+  margin: 24px 0 16px;
+}
+
+pre {
+  max-width: 100%;
+  padding: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: white;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 0.875rem;
+}
+
+details {
+  margin-block: 12px;
+}
+
+summary {
+  padding-block: 10px;
+  min-height: 44px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+summary:hover {
+  text-decoration: underline;
+}
+
+summary:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+  border-radius: 4px;
+}

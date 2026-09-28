@@ -71,3 +71,17 @@ def test_analyze_endpoint_blocks_unapproved_model(monkeypatch):
     assert payload["outcome"] == "blocked"
     assert payload["classification"] is None
     assert payload["guidance"] is None
+
+
+def test_ui_serves_html_and_assets():
+    response = client.get("/ui/")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert 'id="analysis-form"' in response.text
+
+    for filename in ("app.js", "styles.css"):
+        asset = client.get(f"/ui/{filename}")
+
+        assert asset.status_code == 200
+        assert asset.content

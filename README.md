@@ -73,6 +73,20 @@ curl -X POST "http://127.0.0.1:8000/analyze" \
 The response includes model status, classification, and cited guidance.
 It does not perform containment actions; those require human approval.
 
+### Local Web Interface
+
+With the API running, open http://127.0.0.1:8000/ui/ in your browser.
+
+- Enter a message and click **Analisar mensagem**, or press Enter.
+- Use Shift+Enter to insert a new line.
+- View the classification and expand the retrieved sources.
+- Expand **Ver resposta completa** to inspect the full JSON response.
+
+The interface uses the deterministic incident workflow through `/analyze`.
+It does not generate LLM responses or execute containment actions.
+The service remains available only on the local machine when using the
+provided Docker Compose configuration.
+
 ## Using the Deterministic MLOps Copilot
 
 The current copilot stage works without an LLM. It exposes deterministic,

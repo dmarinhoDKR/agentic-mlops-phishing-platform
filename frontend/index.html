@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Análise de phishing</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <h1>Análise de phishing</h1>
+      <p>Analise uma mensagem e consulte as orientações com suas fontes.</p>
+
+      <form id="analysis-form">
+        <label for="message">Mensagem para análise</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="8"
+          maxlength="10000"
+          aria-describedby="message-help"
+          required
+        ></textarea>
+        <p id="message-help">Enter para analisar. Shift+Enter para uma nova linha.</p>
+
+        <button type="submit" disabled>Analisar mensagem</button>
+      </form>
+
+      <p id="analysis-status" role="status"></p>
+      <section aria-label="Resultado da análise" id="analysis-result"></section>
+    </main>
+  </body>
+</html>

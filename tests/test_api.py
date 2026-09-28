@@ -56,3 +56,18 @@ def test_analyze_endpoint_rejects_blank_text():
     response = client.post("/analyze", json={"text": "   "})
 
     assert response.status_code == 422
+
+
+def test_analyze_endpoint_blocks_unapproved_model(monkeypatch):
+    monkeypatch.setattr(
+        "phishing_ml.agents.workflow.build_model_status",
+        lambda config_path: {"status": "rejected"},
+    )
+
+    response = client.post("/analyze", json={"text": "Suspicious message"})
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["outcome"] == "blocked"
+    assert payload["classification"] is None
+    assert payload["guidance"] is None
